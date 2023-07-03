@@ -1,3 +1,4 @@
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +16,7 @@ public class User extends Note implements NoteService{
     private String userName;
     private String password;
     
-    @override
+    @Override
     public void createNote(){
         System.out.println("Titulo: ");
         Scanner keyBoard = new Scanner(System.in);
@@ -33,7 +34,7 @@ public class User extends Note implements NoteService{
         }
     }
     
-    @override
+    @Override
     public Note getNote(){
         Notebook notebook = new Notebook();
         Note note = new Note();
@@ -56,4 +57,22 @@ public class User extends Note implements NoteService{
         }
         return note;
     }
+    
+    @Override
+    public void deleteNote(){
+        Notebook notebook = new Notebook();
+        Scanner keyBoard = new Scanner(System.in);
+        System.out.println("Digite o titulo da nota: ");
+        String title = keyBoard.nextLine();
+        String filePath = notebook.getPath()+title;
+        File arquivo = new File(filePath);
+        if (arquivo.delete()) {
+            System.out.println("Arquivo excluído com sucesso.");
+        } else {
+            System.out.println("Não foi possível excluir o arquivo.");
+        }
+        keyBoard.close();
+    }
+    
+    
 }
