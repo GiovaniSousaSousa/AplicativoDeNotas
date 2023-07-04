@@ -1,7 +1,7 @@
 import java.util.List;
 
 public class Notebook {
-    private String path = "notebooks/";
+    private final String path = "notebooks/";
     private List<Note> notes;
 
     public String getPath() {

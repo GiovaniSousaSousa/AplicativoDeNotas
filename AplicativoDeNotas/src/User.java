@@ -1,3 +1,4 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,14 +66,32 @@ public class User extends Note implements NoteService{
         System.out.println("Digite o titulo da nota: ");
         String title = keyBoard.nextLine();
         String filePath = notebook.getPath()+title;
-        File arquivo = new File(filePath);
-        if (arquivo.delete()) {
+        File file = new File(filePath);
+        if (file.delete()) {
             System.out.println("Arquivo excluído com sucesso.");
         } else {
             System.out.println("Não foi possível excluir o arquivo.");
         }
         keyBoard.close();
     }
-    
+    @Override
+    public void updateNote(){
+        Notebook notebook = new Notebook();
+        Scanner keyBoard = new Scanner(System.in);
+        System.out.println("Digite o titulo da nota: ");
+        String title = keyBoard.nextLine();
+        String file = notebook.getPath()+title;
+        System.out.println("Digite o conteudo: ");
+        String content = keyBoard.nextLine();
+        try {
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(content);
+            bw.newLine();
+            bw.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     
 }
