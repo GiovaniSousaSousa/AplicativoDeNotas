@@ -14,9 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class User extends Note implements NoteService{
-    private String userName;
-    private String password;
-    
+   
     @Override
     public void createNote(){
         System.out.println("Titulo: ");
@@ -25,29 +23,39 @@ public class User extends Note implements NoteService{
         System.out.println("Conteudo: ");
         String content = keyBoard.nextLine();
         Note note = new Note(title, content, LocalDate.now(), LocalDateTime.now());
+        String fileName = title+".txt";
         keyBoard.close();
-        FileWriter file;
         try {
-            file = new FileWriter(new Notebook().getPath());
-            file.write(note.toString());
-        } catch (IOException ex) {
+            File directory = new File(new Notebook().getPath());
+            File file = new File(directory, fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            } else {
+                System.out.println("Nota com este titulo ja existe.");
+            }
+            FileWriter writer = new FileWriter(file);
+            BufferedWriter buffer = new BufferedWriter(writer);
+            buffer.write(note.toString());
+            buffer.close();
+        }
+        catch (IOException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     @Override
-    public Note getNote(){
+    public void getNote(){
         Notebook notebook = new Notebook();
         Note note = new Note();
         Scanner keyBoard = new Scanner(System.in);
         System.out.println("Digite o titulo da nota: ");
         String title = keyBoard.nextLine();
-        Path file = Paths.get(notebook.getPath()+title);
+        Path file = Paths.get(notebook.getPath()+title+".txt");
         try{
             // Realiza a leitura de todas as linhas do arquivo
-            List<String> linhas = Files.readAllLines(file);
+            List<String> lines = Files.readAllLines(file);
             StringJoiner joiner = new StringJoiner(", ");
-            for (String item : linhas) {
+            for (String item : lines) {
                 joiner.add(item);
             }
             String content = joiner.toString();
@@ -56,7 +64,7 @@ public class User extends Note implements NoteService{
         }catch(Exception e){
             e.printStackTrace();
         }
-        return note;
+        System.out.println(note.toString());
     }
     
     @Override
