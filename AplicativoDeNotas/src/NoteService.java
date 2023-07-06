@@ -3,4 +3,5 @@ public interface NoteService {
     void updateNote();
     void deleteNote();
     void getNote();
+    void listNotes();
 }

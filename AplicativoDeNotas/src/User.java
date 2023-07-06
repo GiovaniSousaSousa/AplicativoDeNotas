@@ -18,13 +18,13 @@ public class User extends Note implements NoteService{
     @Override
     public void createNote(){
         System.out.println("Titulo: ");
-        Scanner keyBoard = new Scanner(System.in);
-        String title = keyBoard.nextLine();
+        Scanner keyBoardCreate = new Scanner(System.in);
+        String title = keyBoardCreate.nextLine();
         System.out.println("Conteudo: ");
-        String content = keyBoard.nextLine();
+        String content = keyBoardCreate.nextLine();
         Note note = new Note(title, content, LocalDate.now(), LocalDateTime.now());
         String fileName = title+".txt";
-        keyBoard.close();
+        keyBoardCreate.close();
         try {
             File directory = new File(new Notebook().getPath());
             File file = new File(directory, fileName);
@@ -35,8 +35,16 @@ public class User extends Note implements NoteService{
             }
             FileWriter writer = new FileWriter(file);
             BufferedWriter buffer = new BufferedWriter(writer);
-            buffer.write(note.toString());
+            buffer.write("Title: "+note.getTitle());
+            buffer.newLine();
+            buffer.write("dateCreated:"+note.getDateCreated());
+            buffer.newLine();
+            buffer.write("lastModified: "+note.getLastModified());
+            buffer.newLine();
+            buffer.write("content: "+note.getContent());
+            buffer.newLine();
             buffer.close();
+            
         }
         catch (IOException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
@@ -47,14 +55,15 @@ public class User extends Note implements NoteService{
     public void getNote(){
         Notebook notebook = new Notebook();
         Note note = new Note();
-        Scanner keyBoard = new Scanner(System.in);
+        Scanner keyBoardGet = new Scanner(System.in);
         System.out.println("Digite o titulo da nota: ");
-        String title = keyBoard.nextLine();
+        String title = keyBoardGet.nextLine();
+        keyBoardGet.close();
         Path file = Paths.get(notebook.getPath()+title+".txt");
         try{
             // Realiza a leitura de todas as linhas do arquivo
             List<String> lines = Files.readAllLines(file);
-            StringJoiner joiner = new StringJoiner(", ");
+            StringJoiner joiner = new StringJoiner(". ");
             for (String item : lines) {
                 joiner.add(item);
             }
@@ -64,33 +73,33 @@ public class User extends Note implements NoteService{
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.println(note.toString());
+        System.out.println(note.getContent());
     }
     
     @Override
     public void deleteNote(){
         Notebook notebook = new Notebook();
-        Scanner keyBoard = new Scanner(System.in);
+        Scanner keyBoardDelete = new Scanner(System.in);
         System.out.println("Digite o titulo da nota: ");
-        String title = keyBoard.nextLine();
-        String filePath = notebook.getPath()+title;
+        String title = keyBoardDelete.nextLine();
+        String filePath = notebook.getPath()+title+".txt";
         File file = new File(filePath);
         if (file.delete()) {
-            System.out.println("Arquivo excluído com sucesso.");
+            System.out.println("Arquivo excluido com sucesso.");
         } else {
-            System.out.println("Não foi possível excluir o arquivo.");
+            System.out.println("Nao foi possivel excluir o arquivo.");
         }
-        keyBoard.close();
+        keyBoardDelete.close();
     }
     @Override
     public void updateNote(){
         Notebook notebook = new Notebook();
-        Scanner keyBoard = new Scanner(System.in);
+        Scanner keyBoardUpdate = new Scanner(System.in);
         System.out.println("Digite o titulo da nota: ");
-        String title = keyBoard.nextLine();
-        String file = notebook.getPath()+title;
+        String title = keyBoardUpdate.nextLine();
+        String file = notebook.getPath()+title+".txt";
         System.out.println("Digite o conteudo: ");
-        String content = keyBoard.nextLine();
+        String content = keyBoardUpdate.nextLine();
         try {
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -102,4 +111,20 @@ public class User extends Note implements NoteService{
         }
     }
     
+    @Override
+    public void listNotes(){
+        Notebook notebook = new Notebook();
+        String directory = notebook.getPath();
+
+        File folder = new File(directory);
+        File[] files = folder.listFiles();
+        System.out.println("*****Lista de notas*****");
+        if (files != null) {
+            for (File archive : files) {
+                if (archive.isFile()) {
+                    System.out.println(archive.getName());
+                }
+            }
+        }
+    }
 }
